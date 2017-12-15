@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>论坛</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/css/home.css">
+	</head>
+
+	<body>
+
+		<% include head.ejs%>
+
+		<div class="container" style="margin-top: 30px;">
+			<div class="row">
+				<%for(var i=0; i<result.length; i++){%>
+					<div class="media">
+						<div class="media-left">
+							<a href="/curFirendInfo?userName=<%=result[i].userName%>">
+								<img class="media-object" src="/userPic/<%=result[i].userPic%>" alt="...">
+							</a>
+						</div>
+						<div class="media-body">
+							<div class="media-heading">
+								<h5 class="media-right"><span class="glyphicon glyphicon-user"></span>&nbsp;<a href="/curFirendInfo?userName=<%=result[i].userName%>"><%=result[i].userName%></a></h5>
+								<h5 class="media-rigth"><span class="glyphicon glyphicon-pencil"></span>&nbsp;<b>个性签名：</b>&nbsp;<%if(!result[i].signatureText || result[i].signatureText == ""){%>这个人很懒，什么都没留下!<%}else{%><%=result[i].signatureText%><%}%></h5>
+							</div>
+						</div>
+					</div>
+				<%}%>
+			</div>
+		</div>
+
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/underscore-noflect.js"></script>
+
+</body>
+
+</html>

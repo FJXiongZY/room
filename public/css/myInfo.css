@@ -1,0 +1,20 @@
+.jumbotron{
+	background: #f8f8f8;
+	margin: 0;
+}
+
+#cardContent{
+	margin-top: 30px;
+}
+
+#basics{
+	position: relative;
+	top: 0;
+	height: 60px;
+	border-bottom:1px solid blue;
+}
+#setBasics{
+	position: absolute;
+	top: 15px;
+	right: 10px;
+}

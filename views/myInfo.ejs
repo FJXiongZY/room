@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>论坛</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/css/home.css">
+		<link rel="stylesheet" type="text/css" href="/css/myInfo.css">
+	</head>
+
+	<body>
+		<% include head.ejs%>
+
+		<div class="jumbotron">
+			<div class="container">
+				<h2><span class="glyphicon glyphicon-education"><b><%=userName%></b>的个人中心</h2>
+				<div class="media">
+					<div class="media-left">
+						<a href="/myInfo/setVia">
+							<img class="media-object showAllCard" src="/userPic/<%=userPic%>" alt="...">
+						</a>
+					</div>
+					<div class="media-body">
+						<div class="media-heading">
+							<h4 class="media-rigth"><span class="glyphicon glyphicon-pencil"></span>&nbsp;<b>个性签名：</b>&nbsp;<%if(!signature || signature == ""){%>这个人很懒，什么都没留下!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">编辑个性签名</a>&nbsp;&nbsp;&nbsp;<a href="/myInfo/setVia" class="btn btn-primary">更换头像</a><%}else{%><%=signature%><br><br><br><a class="btn btn-primary" data-toggle="modal" data-target="#myModal">编辑个性签名</a>&nbsp;&nbsp;&nbsp;<a href="/myInfo/setVia" class="btn btn-primary">更换头像</a><%}%></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav myInfo-nav">
+						<li id="myCard">
+							<a href="javascript:;" >我的帖子</a>
+						</li>
+						<li id="record">
+							<a href="javascript:;" >个人档</a>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+	
+
+		<!-- 我的帖子 -->
+		<div class="container" id="cardContent">
+			<div class="row">
+				<div id="appendCard">
+
+				</div>
+			</div>
+		</div>
+		<!-- 我的帖子 -->
+
+<!-- 编辑个性签名 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">编辑个性签名</h4>
+      </div>
+      <div class="modal-body">
+        	<textarea class="form-control" id="signatureText" rows="5"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" id="onSignature" class="btn btn-primary">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 编辑个性签名 -->
+
+<!-- 设置个人档 -->
+<div class="modal fade" id="setBasicsModule" tabindex="-1" role="dialog" aria-labelledby="setBasicsMyModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="setBasicsMyModalLabel">设置个人档</h4>
+      </div>
+      <div class="modal-body setBasicsModule-body">
+      	
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" id="onSetBasics" class="btn btn-primary">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /设置个人档 -->
+
+<!-- 我的帖子模板 -->
+<script type="text/template" id="moban">
+	<div class="media">
+		<div class="media-left">
+			<a href="#">
+				<img class="media-object showAllCard" src="/userPic/{{=userPic}}" alt="...">
+			</a>
+		</div>
+		<div class="media-body">
+			<div class="media-heading">
+				<h4 class="media-left" style="">{{=title}}</h4>
+			</div>
+			<div id="media-content">
+				<p id="content" class="pull-left">{{=content}}</p><br>
+				<img id="postCard" src="/cardPic/{{=myPostCardPic}}">
+			</div>
+		</div>
+	</div>
+</script>
+<!-- /我的帖子模板 -->
+
+<!-- 个人档模板 -->
+<script type="text/template" id="moban2">
+	<dl class="dl-horizontal">
+	  <dt>性别：</dt>
+	  <dd>{{=sex}}</dd>
+	  <dt>年龄：</dt>
+	  <dd>{{=age}}</dd>
+	  <dt>生日：</dt>
+	  <dd>{{=birthday}}</dd>
+	  <dt>星座：</dt>
+	  <dd>{{=constellation}}</dd>
+	  <dt>职业：</dt>
+	  <dd>{{=job}}</dd>
+	  <dt>公司名称：</dt>
+	  <dd>{{=company}}</dd>
+	</dl>
+</script>
+<!-- /个人档模板 -->
+
+<!-- 个人档模板2 -->
+<script type="text/template" id="moban5">
+	<dl class="dl-horizontal">
+	  <dt>性别：</dt>
+	  <dd>请完善个人信息...</dd>
+	  <dt>年龄：</dt>
+	  <dd>请完善个人信息...</dd>
+	  <dt>生日：</dt>
+	  <dd>请完善个人信息...</dd>
+	  <dt>星座：</dt>
+	  <dd>请完善个人信息...</dd>
+	  <dt>职业：</dt>
+	  <dd>请完善个人信息...</dd>
+	  <dt>公司名称：</dt>
+	  <dd>请完善个人信息...</dd>
+	</dl>
+</script>
+<!-- /个人档模板2 -->
+
+<!-- 修改档模板 -->
+<script type="text/template" id="moban3">
+	<form class="form-horizontal">
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">性别：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="sex" value="{{=sex}}" placeholder="请输入性别">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">年龄：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="age" value="{{=age}}" placeholder="请输入年龄">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">生日：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="birthday" value="{{=birthday}}" placeholder="请输入生日">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">星座：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="constellation" value="{{=constellation}}" placeholder="请输入星座">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">职业：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="job" value="{{=job}}" placeholder="请输入职业">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">公司名称：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="company" value="{{=company}}" placeholder="请输入公司名称">
+	    </div>
+	  </div>
+	</form>
+</script>
+<!-- /修改档模板 -->
+
+<!-- 修改档模板2 -->
+<script type="text/template" id="moban4">
+	<form class="form-horizontal">
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">性别：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="sex" value="" placeholder="请输入性别">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">年龄：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="age" value="" placeholder="请输入年龄">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">生日：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="birthday" value="" placeholder="请输入生日">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">星座：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="constellation" value="" placeholder="请输入星座">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">职业：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="job" value="" placeholder="请输入职业">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="inputEmail3" class="col-sm-3 control-label">公司名称：</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="company" value="" placeholder="请输入公司名称">
+	    </div>
+	  </div>
+	</form>
+</script>
+<!-- /修改档模板2 -->
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/underscore-noflect.js"></script>
+<script type="text/javascript">
+	var compiled = _.template($("#moban").html());
+	var compiled2 = _.template($("#moban2").html());
+	var compiled3 = _.template($("#moban3").html());
+	var compiled4 = _.template($("#moban4").html());
+	var compiled5 = _.template($("#moban5").html());
+	$(".myInfo-nav li:first").addClass('active');
+
+	$("#onSignature").on("click", function(){
+		$.post("/myInfo/doSignature", {"signatureText":$("#signatureText").val()},function(result){
+			if(result == "1"){
+				alert("编辑成功！");
+				window.location = '/myInfo';
+			}else{
+				alert("编辑失败！");
+			}
+		});
+	});
+
+	myCard();
+	$("#myCard").on("click", function(){
+		$(this).addClass("active").siblings().removeClass();
+		myCard();
+	});
+	function myCard(){
+		$("#appendCard").html("");
+		$.get("/myInfo/myCard?userName=<%=userName%>", function(result){
+			for(var i=0; i<result.length; i++){
+    			var htmlstring = compiled(result[i]);
+	            $("#appendCard").append($(htmlstring));
+    		}
+		});
+	}
+
+	$("#onSetBasics").on("click",function(){
+		$.post("/myInfo/doSetBasics", {
+			"sex":$("#sex").val(),
+			"age":$("#age").val(),
+			"birthday":$("#birthday").val(),
+			"constellation":$("#constellation").val(),
+			"job":$("#job").val(),
+			"company":$("#company").val()
+		}, function(result){
+			if(result == '1'){
+				alert("修改成功");
+				window.location = '/myInfo';
+			}else{
+				alert("修改失败");
+			}
+		});
+	});
+
+	$("#record").on("click",function(){
+		$(this).addClass("active").siblings().removeClass();
+		$("#appendCard").html("<div id='basics'><h3 class='pull-left' >基本资料</h3><a class='pull-right btn btn-info' href='javascript:;' data-toggle='modal' data-target='#setBasicsModule' id='setBasics'>修改个人资料</a></div>");
+		$.get("/myInfo/record?userName=<%=userName%>", function(result){
+			$(".setBasicsModule-body").html("");
+			if(result[0].sex || result[0].sex == ""){
+				for(var i=0; i<result.length; i++){
+	    			var htmlstring2 = compiled2(result[i]);
+	    			var htmlstring3 = compiled3(result[i]);
+		            $("#appendCard").append($(htmlstring2));
+		            $(".setBasicsModule-body").append($(htmlstring3));
+	    		}
+			}else{
+				var htmlstring5 = compiled5(result);
+		        $("#appendCard").append($(htmlstring5));
+				var htmlstring4 = compiled4(result);
+		        $(".setBasicsModule-body").append($(htmlstring4));
+			}
+		});
+	});
+</script>
+</body>
+
+</html>

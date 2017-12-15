@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>论坛</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/css/home.css">
+	</head>
+
+	<body>
+
+		<% include head.ejs%>
+
+		<div class="container" style="margin-bottom: 30px">
+			<div class="row">
+				<img src="/images/bg.jpg" class="img-responsive">
+			</div>
+		</div>
+
+		<div class="container" id="cardContent">
+			<div class="row">
+				<div class="col-md-9" style="border-right: 1px solid #666">
+					<div id="appendCard">
+						
+					</div>
+					<!-- 分页 -->
+					<nav aria-label="Page navigation" class="text-center">
+					  <ul class="pagination">
+			
+					  </ul>
+					</nav>
+					<!-- 分页 -->
+				</div>
+				
+				<div class="col-md-3">
+					<h3>我在贴吧</h3>
+					<div class="media">
+						<div class="media-left">
+							<a href="/myInfo/setVia">
+								<img class="media-object" src="/userPic/<%=userPic%>" alt="...">
+							</a>
+						</div>
+						<div class="media-body">
+							<div class="media-heading">
+								<%if(login){%>
+								<h5 class="media-right"><span class="glyphicon glyphicon-user"></span>&nbsp;<%=userName%></h5>
+								<h6><a href="/myInfo/" class="btn btn-primary">我的帖子</a></h6>
+								<h6><a class="btn btn-primary" data-toggle="modal" data-target="#myModal">发表帖子</a></h6>
+								<%}else{%>
+									<a href="/login">请登录</a>
+								<%}%>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<!-- 发表帖子 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">发表帖子</h4>
+      </div>
+      <form action="/doPostCard" method="post" enctype="multipart/form-data">
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">标题:</label>
+            <input type="text" class="form-control" name="title" id="title">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="control-label">内容:</label>
+            <textarea class="form-control" rows="5" name="content" id="content"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="control-label">图片:</label>
+            <input type="file" class="form-control" name="cardPic" id="cardPic">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <!-- <button type="button" id="postCard" class="btn btn-primary">发表</button> -->
+        <input type="submit" id="onPostCard" class="btn btn-primary" value="发表" />
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /发表帖子 -->
+
+<script type="text/javascript">
+	var userName = "<%=userName%>";
+</script>
+
+<script type="text/template" id="moban">
+	<div class="media">
+		<div class="media-left">
+				<a href="/curFirendInfo?userName={{=userName}}">
+					<img class="media-object showAllCard" src="/userPic/{{=userPic}}" alt="...">
+				</a>
+		</div>
+		<div class="media-body">
+			<div class="media-heading">
+				<h4 class="media-left" style="">{{=title}}</h4>
+				<h5 class="media-rigth media-user"><span class="glyphicon glyphicon-user"></span>&nbsp;{{=userName}}</h5>
+			</div>
+			<div id="media-content">
+				<p id="content" class="pull-left">{{=content}}</p><br>
+				<img id="postCard" src="/cardPic/{{=myPostCardPic}}">
+			</div>
+		</div>
+	</div>
+</script>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/underscore-noflect.js"></script>
+<script type="text/javascript">
+
+	var compiled = _.template($("#moban").html());
+
+    getAllCard(0);
+    function getAllCard(page){
+    	$("#appendCard").html("");
+    	$.get("/getAllCard?page=" + page, function(result){
+    		for(var i=0; i<result.length; i++){
+    			var htmlstring = compiled(result[i]);
+	            //添加DOM
+	            $("#appendCard").append($(htmlstring));
+    		}
+	    });
+    }
+
+    $.get("/getCount", function(result){
+    	var count = parseInt(result);
+    	var getPageSize = Math.ceil(count/6);
+    	for(var i=0; i<getPageSize; i++){
+    		$(".pagination").append("<li><a href='javascript:void(0);'>" + i + "</a></li>");
+    	}
+
+    	$(".pagination li:first").addClass("active");
+    	$(".pagination li").on("click", function(){
+    		var thisPage = $(this).index();
+    		getAllCard(thisPage);
+    		$(this).addClass("active").siblings().removeClass();
+    	})
+    });
+
+</script>
+</body>
+
+</html>

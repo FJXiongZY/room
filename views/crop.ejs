@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>论坛</title>
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/home.css">
+        <link rel="stylesheet" type="text/css" href="/css/jquery.Jcrop.css">
+    </head>
+
+    <body>
+
+        <% include head.ejs%>
+
+       <img src="/userPic/<%=Via%>" id="target" alt="Preview"/>
+
+        <div id="preview-pane">
+            <div class="preview-container">
+                <img src="/userPic/<%=Via%>" class="jcrop-preview" alt="Preview"/>
+            </div>
+        </div>
+
+        <input type="button" value="剪裁！！" class="btn btn-success" id="btn">
+        <input type="button" value="返回上一页" class="btn btn-warning" onclick="history.go(-1)" />
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.Jcrop.js"></script>
+        <script type="text/javascript" src="/js/xiaoguo.js"></script>
+        <script type="text/javascript">
+            $("#btn").click(function () {
+                var w = parseInt($(".jcrop-holder>div:first").css("width"));
+                var h = parseInt($(".jcrop-holder>div:first").css("height"));
+                var x = parseInt($(".jcrop-holder>div:first").css("left"));
+                var y = parseInt($(".jcrop-holder>div:first").css("top"));
+
+                $.post("/myInfo/doCrop", {
+                    "w": w,
+                    "h": h,
+                    "x": x,
+                    "y": y
+                }, function(result){
+                    if(result == '1'){
+                        alert("上传成功,正在跳转到首页");
+                        window.location = "/";
+                    }else{
+                        alert("上传失败");
+                    }
+                });
+            });
+        </script>
+    </body>
+
+</html>
+
